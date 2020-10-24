@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="16x16">
+<title>poc</title>
+<style>
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'mini';
+    overflow-y: hidden;
+    background-color: #000000;
+}
+
+#container {
+	display: flex;
+    justify-content: center;
+}
+
+</style>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+<script>
+    WebFont.load({
+        google: {
+            families: ['Press Start 2P']
+        },
+        active:e=>{
+            
+        }
+    });
+</script>
+<script src="node_modules/pixi.js/dist/pixi.js" charset="utf-8"></script>
+<script src="node_modules/ramda/dist/ramda.js" charset="utf-8"></script>
+<div id="container"></div>
+<script src="main.js" charset="utf-8"></script>
+</body>
+</html>

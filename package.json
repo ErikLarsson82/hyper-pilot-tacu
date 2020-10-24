@@ -1,0 +1,18 @@
+{
+  "name": "hyper-pilot-tacu",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm install && npx serve",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "pixi-sound": "^2.0.2",
+    "pixi.js": "4.5.4",
+    "ramda": "^0.25.0",
+    "serve": "^11.3.2"
+  },
+  "license": "ISC"
+}
