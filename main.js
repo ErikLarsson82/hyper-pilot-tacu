@@ -24,7 +24,7 @@ const config = {
     sharedTicker: true,
 }
 
-let air_velocity, air_thickness, p1gamepad
+let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2
 
 const app = new PIXI.Application(config)
 const renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, config)
@@ -46,7 +46,7 @@ PIXI.loader.load(startGame)
 
 function startGame() {
     
-    air_velocity = 1
+    air_velocity = 0
     air_thickness = 0.01
 
 	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
@@ -75,6 +75,22 @@ function startGame() {
         star.drawRect(0, 0, 1, 1)
         stage.addChild(star)
     }
+
+    debug1 = new PIXI.Graphics()
+    debug1.game = { type: 'debug1' }
+    debug1.position.x = 0
+    debug1.position.y = 0
+    debug1.beginFill(0xff0000)
+    debug1.drawRect(0, 0, 10, 10)
+    stage.addChild(debug1)
+
+    debug2 = new PIXI.Graphics()
+    debug2.game = { type: 'debug2' }
+    debug2.position.x = 0
+    debug2.position.y = 0
+    debug2.beginFill(0x00ff00)
+    debug2.drawRect(0, 0, 10, 10)
+    stage.addChild(debug2)
 
 
     animationLoop()
@@ -120,6 +136,19 @@ function tickEntities(child) {
 
     switch (child.game && child.game.type) {
 
+        case 'debug1':
+            debug1.position.x = 300
+            debug1.position.y = 100 + p1gamepad.axes[3] * 10
+            break;
+
+        case 'debug2':
+            //const gp = p1gamepad.axes[3]
+            //const s = 1 / 1 - (Math.E ** gp / 50)
+            const exp = x => (2 ** x) * 10
+            debug2.position.x = 320
+            debug2.position.y = 100 + exp(p1gamepad.axes[3]) * 10
+            break;
+
         case 'star':
             if (air_thickness === 0) return
 
@@ -130,7 +159,12 @@ function tickEntities(child) {
             break;
 
         case 'p1':
-            p1Sprite.game.angle = p1gamepad.axes[3]
+            //const gp = p1gamepad.axes[3]
+            //const s = 1 / -1 + (Math.E ** input)
+
+            //console.log(p1gamepad.axes[3], sigmoid)
+
+            //p1Sprite.game.angle += s * 0.1
             /*
             if (controls.p1.left) {
                 p1Sprite.game.angle -= 0.06
@@ -167,7 +201,7 @@ function tickEntities(child) {
             p1Sprite.game.vy = Math.min(3, p1Sprite.game.vy)
             p1Sprite.rotation = p1Sprite.game.angle
 
-            p1Sprite.position.x += p1Sprite.game.vx 
+            //p1Sprite.position.x += p1Sprite.game.vx 
             p1Sprite.position.y += p1Sprite.game.vy
 
             //p1Sprite.position.x += p1gamepad.axes[0]
@@ -229,10 +263,10 @@ function tickEntities(child) {
 function getGamePadInput() {
     var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 
-    console.log(gamepads)
 
     if (gamepads['0']) {
         p1gamepad = gamepads['0']
+        //console.log(gamepads['0'].axes)
     } else {
         p1gamepad = {
             axes: [0,0,0,0],
