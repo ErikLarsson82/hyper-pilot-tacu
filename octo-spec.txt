@@ -1,0 +1,17 @@
+RougeLike ShootemUP Random banor 1 player
+Många olika roliga vapen. Slumpas ut vapen. Börja med skitvapen. Hitta vapen längst med vägen.
+Många olika fiender.
+
+pew - startvapen, skjuter rakt i sidled
+spreader - mer skada och spread
+laservapen - laddar upp över tid och bränner
+
+massa små enkla crapfiender som inte ens skjuter, dom kommer i vågor, sinusvågor, v-formationer, spelar ingen roll att dom åker förbi
+om du skjuter dom eller inte spelar ingen roll 
+skjut hela gruppen - crate som kan droppa vapen
+
+
+
+epic fleet battle boss battle
+moderskepp kan uppgraderas med slots
+ace pilot som skjuter svagt men är agil, snabb, och kan manövrera som en ninja

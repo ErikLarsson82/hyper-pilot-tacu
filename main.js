@@ -5,7 +5,8 @@ const controls = {
         down: false,
         left: false,
         right: false,
-        shoot: false
+        shoot: false,
+        engine: false
     },
     p2: {
         up: false,
@@ -16,8 +17,6 @@ const controls = {
     }
 }
 
-const RENDER_SIZE = 256
-
 const config = {
     antialias: false,
     transparent: false,
@@ -25,8 +24,10 @@ const config = {
     sharedTicker: true,
 }
 
+let air_velocity, air_thickness, p1gamepad
+
 const app = new PIXI.Application(config)
-const renderer = PIXI.autoDetectRenderer(RENDER_SIZE, RENDER_SIZE, config)
+const renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, config)
 app.renderer = renderer
 
 const stage = app.stage
@@ -37,6 +38,7 @@ renderer.view.style.imageRendering = 'pixelated'
 renderer.backgroundColor = 0x181425
 
 PIXI.loader.add('player-1.png')
+PIXI.loader.add('engine.png')
 PIXI.loader.load(startGame)
 
 
@@ -44,6 +46,9 @@ PIXI.loader.load(startGame)
 
 function startGame() {
     
+    air_velocity = 1
+    air_thickness = 0.01
+
 	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
     p1Sprite.game = {
         type: 'p1',
@@ -52,9 +57,25 @@ function startGame() {
         angle: 0
     }
     p1Sprite.anchor.set(0.5, 0.5)
-	p1Sprite.position.x = 10
-	p1Sprite.position.y = 10
+	p1Sprite.position.x = 50
+	p1Sprite.position.y = 50
 	stage.addChild(p1Sprite)
+
+    engine = new PIXI.Sprite(PIXI.Texture.fromImage('engine.png'))
+    engine.position.x = -15
+    engine.position.y = 0
+    p1Sprite.addChild(engine)
+
+    for (var i = 0; i < 100; i++) {
+        const star = new PIXI.Graphics()
+        star.game = { type: 'star' }
+        star.position.x = Math.floor(Math.random() * window.innerWidth)
+        star.position.y = Math.floor(Math.random() * window.innerHeight)
+        star.beginFill(0xcccccc)
+        star.drawRect(0, 0, 1, 1)
+        stage.addChild(star)
+    }
+
 
     animationLoop()
 }
@@ -69,6 +90,8 @@ function startGame() {
 
 function animationLoop() {
     requestAnimationFrame(animationLoop)
+
+    getGamePadInput()
 
     stage.children.forEach(tickEntities)
 
@@ -93,56 +116,65 @@ const isCollision = (sprite1, sprite2) => {
     return distance < collisionDistance
 }
 
-
-let touchFactor = 0, touchDir = 'left'
-
 function tickEntities(child) {
+
     switch (child.game && child.game.type) {
 
-        case 'p1':
+        case 'star':
+            if (air_thickness === 0) return
 
+            child.position.x -= air_velocity
+            if (child.position.x < 0) {
+                child.position.x = window.innerWidth
+            }
+            break;
+
+        case 'p1':
+            p1Sprite.game.angle = p1gamepad.axes[3]
+            /*
             if (controls.p1.left) {
                 p1Sprite.game.angle -= 0.06
                 
-                /*
-                touchFactor += 2
-                if (touchDir === 'right') {
-                    touchFactor = 1
-                }
-                touchDir = 'left'*/
-
-                
             } else if (controls.p1.right) {
                 p1Sprite.game.angle += 0.02
-                /*
-                touchFactor += 2
-                if (touchDir === 'left') {
-                    touchFactor = 1
-                }
-                touchDir = 'right'*/
-
-                
-            } else {
-                //touchFactor -= 1
-                //touchFactor = Math.max(touchFactor, 0)
             }
+            */
 
+            
+            if (p1gamepad.buttons[5].pressed) {
+                engine.visible = true
+                p1Sprite.game.vx += Math.sin(p1Sprite.game.angle + (Math.PI*0.5)) * 0.01
+                p1Sprite.game.vy += Math.cos(p1Sprite.game.angle + (Math.PI*-0.5)) * 0.01
+            } else {
+                engine.visible = false
+            }
+            
 
-            if (controls.p1.up) {
+            //console.log(p1Sprite.game.angle)
+
+            //p1Sprite.game.angle = drag(angle)
+
+            /*if (controls.p1.up) {
                 p1Sprite.position.x += 1
             }
             if (controls.p1.down) {
                 p1Sprite.position.x -= 1
-            }
+            }*/
 
-            p1Sprite.game.vx = Math.min(3, p1Sprite.game.vx)
+            const d = drag(p1Sprite.game.angle) * air_thickness
+            
+            p1Sprite.game.vx = Math.min(3, p1Sprite.game.vx - d)
             p1Sprite.game.vy = Math.min(3, p1Sprite.game.vy)
             p1Sprite.rotation = p1Sprite.game.angle
 
             p1Sprite.position.x += p1Sprite.game.vx 
             p1Sprite.position.y += p1Sprite.game.vy
 
-            if (child.position.y > RENDER_SIZE) {
+            //p1Sprite.position.x += p1gamepad.axes[0]
+            //p1Sprite.position.y += p1gamepad.axes[1]
+
+            return
+            if (child.position.y > window.innerHeight) {
                 /*child.position.y = 230
                 p1Sprite.game.vy = 0
                 p1Sprite.game.angle = 0*/
@@ -165,7 +197,7 @@ function tickEntities(child) {
                 p1Sprite.game.angle = 0
             }
 
-            if (child.position.x > RENDER_SIZE) {
+            if (child.position.x > window.innerWidth) {
                 /*child.position.x = 240
                 p1Sprite.game.vx = 0
                 p1Sprite.game.angle = 0*/
@@ -194,16 +226,25 @@ function tickEntities(child) {
     }
 }
 
+function getGamePadInput() {
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 
+    console.log(gamepads)
 
-
-function drag(angle) {
-    return Math.abs(angle) > 0.7 ? -1 : 1
+    if (gamepads['0']) {
+        p1gamepad = gamepads['0']
+    } else {
+        p1gamepad = {
+            axes: [0,0,0,0],
+            buttons: new Array(18).fill().map(() => ({ pressed: false }))
+        }
+    }
 }
 
 
-
-
+function drag(angle) {
+    return Math.abs(Math.sin(angle))
+}
 
 const isEnemy = ({prefixObject}) => prefixObject === 'enemy'
 const isMine = ({prefixObject}) => prefixObject === 'mine'
@@ -215,74 +256,89 @@ const isStunEffect = ({prefixObject}) => prefixObject === 'stun-effect'
 const isRocket = ({prefixObject}) => prefixObject === 'rocket'
 const isRocketCollisionFilter = ({prefixObject}) => ['p1', 'p2', 'mine', 'pew', 'enemy', 'blast', 'rocket'].includes(prefixObject)
 
-window.addEventListener('keydown', e => {
-    hasInput = true
+function keyboardKeyDown(e) {
+    
+    if (e.keyCode === 68) {
+        controls.p1.right = true
+    }
+    if (e.keyCode === 65) {
+        controls.p1.left = true
+    }
+    if (e.keyCode === 87) {
+        controls.p1.up = true
+    }
+    if (e.keyCode === 83) {
+        controls.p1.down = true
+    }
+    if (e.keyCode === 32) {
+        controls.p1.shoot = true
+    }
+    if (e.keyCode === 13) { //enter
+        controls.p1.engine = true
+    }
 
-	if (e.keyCode === 68) {
-		controls.p1.right = true
-	}
-	if (e.keyCode === 65) {
-		controls.p1.left = true
-	}
-	if (e.keyCode === 87) {
-		controls.p1.up = true
-	}
-	if (e.keyCode === 83) {
-		controls.p1.down = true
-	}
-	if (e.keyCode === 32) {
-		controls.p1.shoot = true
-	}
+    if (e.keyCode === 39) {
+        controls.p2.right = true
+    }
+    if (e.keyCode === 37) {
+        controls.p2.left = true
+    }
+    if (e.keyCode === 38) {
+        controls.p2.up = true
+    }
+    if (e.keyCode === 40) {
+        controls.p2.down = true
+    }
+}
 
-	if (e.keyCode === 39) {
-		controls.p2.right = true
-	}
-	if (e.keyCode === 37) {
-		controls.p2.left = true
-	}
-	if (e.keyCode === 38) {
-		controls.p2.up = true
-	}
-	if (e.keyCode === 40) {
-		controls.p2.down = true
-	}
-	if (e.keyCode === 13) {
-		controls.p2.shoot = true
-	}
-})
+function keyboardKeyUp(e) {
+    if (e.keyCode === 49) { // 1
+        air_velocity += 1
+    }
+    if (e.keyCode === 50) { // 2
+        air_velocity -= 1
+    }
 
-window.addEventListener('keyup', e => {
-	if (e.keyCode === 68) {
-		controls.p1.right = false
-	}
-	if (e.keyCode === 65) {
-		controls.p1.left = false
-	}
-	if (e.keyCode === 87) {
-		controls.p1.up = false
-	}
-	if (e.keyCode === 83) {
-		controls.p1.down = false
-	}
-	if (e.keyCode === 32) {
-		controls.p1.shoot = false
-	}
+    if (e.keyCode === 68) {
+        controls.p1.right = false
+    }
+    if (e.keyCode === 65) {
+        controls.p1.left = false
+    }
+    if (e.keyCode === 87) {
+        controls.p1.up = false
+    }
+    if (e.keyCode === 83) {
+        controls.p1.down = false
+    }
+    if (e.keyCode === 32) {
+        controls.p1.shoot = false
+    }
+    if (e.keyCode === 13) { //enter
+        controls.p1.engine = false
+    }
 
-	if (e.keyCode === 39) {
-		controls.p2.right = false
-	}
-	if (e.keyCode === 37) {
-		controls.p2.left = false
-	}
-	if (e.keyCode === 38) {
-		controls.p2.up = false
-	}
-	if (e.keyCode === 40) {
-		controls.p2.down = false
-	}
-	if (e.keyCode === 13) {
-		controls.p2.shoot = false
-	}
-})
+    if (e.keyCode === 39) {
+        controls.p2.right = false
+    }
+    if (e.keyCode === 37) {
+        controls.p2.left = false
+    }
+    if (e.keyCode === 38) {
+        controls.p2.up = false
+    }
+    if (e.keyCode === 40) {
+        controls.p2.down = false
+    }
+}
+
+window.addEventListener('keydown', keyboardKeyDown)
+window.addEventListener('keyup', keyboardKeyUp)
+
+window.addEventListener("gamepadconnected", function(e) {
+  console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    e.gamepad.index, e.gamepad.id,
+    e.gamepad.buttons.length, e.gamepad.axes.length);
+});
 
 document.getElementById('container').appendChild(app.view)

@@ -1,0 +1,466 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"coll",
+				"collidee"
+			],
+			[
+				"prefix",
+				"prefixFunc"
+			],
+			[
+				"isP",
+				"isPew"
+			],
+			[
+				"prefi",
+				"prefixHull"
+			],
+			[
+				"wave",
+				"waveObject"
+			],
+			[
+				"5-e",
+				"5-enemies-crazy-hard"
+			],
+			[
+				"ge",
+				"generateNewWave"
+			],
+			[
+				"WAV",
+				"ENEMIES_PER_WAVE"
+			],
+			[
+				"sinus",
+				"mini-sinus"
+			],
+			[
+				"hex",
+				"hexColor"
+			],
+			[
+				"pre",
+				"prefixObject"
+			],
+			[
+				"ghost",
+				"ghostSprite"
+			],
+			[
+				"on",
+				"onlySuccess"
+			],
+			[
+				"sortedP",
+				"sortedPolicyDistribution"
+			],
+			[
+				"ran",
+				"randomAgent"
+			],
+			[
+				"exp",
+				"experienceSnapshots"
+			],
+			[
+				"experience",
+				"experienceSequences"
+			],
+			[
+				"FITNE",
+				"FITNESS_TESTS"
+			],
+			[
+				"prefixT",
+				"prefixTimer"
+			],
+			[
+				"h",
+				"highscore"
+			],
+			[
+				"high",
+				"highscoreText"
+			],
+			[
+				"enemy",
+				"enemyKills"
+			],
+			[
+				"enem",
+				"enemyKills"
+			],
+			[
+				"ene",
+				"enemyKills"
+			],
+			[
+				"P2",
+				"P2_START_Y"
+			],
+			[
+				"P2_",
+				"P2_START_X"
+			],
+			[
+				"P1",
+				"P1_START_X"
+			],
+			[
+				"pref",
+				"prefixGodmode"
+			],
+			[
+				"P1_S",
+				"P1_START_Y"
+			],
+			[
+				"bla",
+				"blastHullTexture"
+			],
+			[
+				"mineblass",
+				"mineBlasts"
+			],
+			[
+				"mineb",
+				"mineBlast"
+			],
+			[
+				"mini",
+				"miniSinusEnemySprite"
+			],
+			[
+				"play",
+				"players"
+			],
+			[
+				"pla",
+				"players"
+			],
+			[
+				"playerD",
+				"playerDeaths"
+			],
+			[
+				"playerDe",
+				"playerDeaths"
+			],
+			[
+				"playerDea",
+				"playerDeathText"
+			],
+			[
+				"enemyK",
+				"enemyKillText"
+			],
+			[
+				"dis",
+				"distance"
+			],
+			[
+				"snap",
+				"snapshots"
+			],
+			[
+				"cu",
+				"cubeStates"
+			],
+			[
+				"scra",
+				"scrambleMove"
+			],
+			[
+				"thre",
+				"threatLevel-1"
+			],
+			[
+				"start",
+				"startUfos"
+			],
+			[
+				"st",
+				"startInterceptors"
+			],
+			[
+				"train",
+				"trainingStats"
+			],
+			[
+				"class",
+				"classifierReady"
+			],
+			[
+				"clas",
+				"classifierReady"
+			],
+			[
+				"background",
+				"backgroundColor"
+			],
+			[
+				"back",
+				"backgroundColor"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/F/Dev/hyper-pilot-tacu"
+	],
+	"file_history":
+	[
+		"/F/Dev/pews-and-mines/slim-prototype.js",
+		"/F/Dev/pews-and-mines/levels.js",
+		"/F/Dev/pews-and-mines/main.js",
+		"/F/Dev/rubiks-solver/2x2/3d-cube.html",
+		"/F/Dev/rubiks-solver/2x2/common.js",
+		"/F/Dev/rubiks-solver/package.json",
+		"/F/Dev/rubiks-solver/.env",
+		"/F/Dev/rubiks-solver/2x2/testhtml.html",
+		"/F/Dev/rubiks-solver/server.js",
+		"/F/Dev/rubiks-solver/2x2/random-robot-name-generator.js",
+		"/F/Dev/rubiks-solver/2x2/trainer.js",
+		"/F/Dev/rubiks-solver/2x2/test.js",
+		"/F/Dev/lord-gigamungus.json",
+		"/F/Dev/rubiks-solver/2x2/brains/janne-joffert-mkvi.json",
+		"/F/Dev/rubiks-solver/2x2/src/cube.js",
+		"/F/Dev/rubiks-solver/2x2/src/index.js",
+		"/F/Dev/rubiks-solver/2x2/picture-analyse.js",
+		"/F/Dev/lemon-data-visualisering/index.html",
+		"/F/Dev/lemon-data-visualisering/main.js",
+		"/F/Dev/rubiks-solver/2x2/fitness-logs/fitness.json",
+		"/F/Dev/rubiks-solver/2x2/fitness-benchmark.js",
+		"/F/Dev/rubiks-solver/2x2/scramble-permutation-generator.js",
+		"/F/Dev/rubiks-solver/2x2/deep-scramble-generator.js",
+		"/F/Dev/rubiks-solver/2x2/training-data/training.json",
+		"/F/Dev/skeleton-hill-action/main.js",
+		"/F/Dev/skeleton-hill-action/index.html",
+		"/F/Dev/rubiks-solver/2x2/README.md",
+		"/F/Dev/skeleton-hill-action/package.json",
+		"/F/Dev/skeleton-hill-action/.gitignore",
+		"/F/Dev/rubiks-solver/.gitignore",
+		"/F/Dev/rubiks-solver/2x2/src/test.js",
+		"/F/Dev/rubiks-solver/.babelrc",
+		"/F/Dev/rubiks-solver/webpack.config.js",
+		"/F/Dev/rubiks-solver/2x2/dist/build.js",
+		"/F/Dev/rubiks-solver/README.md",
+		"/F/Dev/rubiks-solver/2x2/dist/index.js",
+		"/F/Dev/rubiks-solver/2x2/experience-recorder.js",
+		"/F/Dev/rubiks-solver/2x2/suite.js",
+		"/F/Dev/rubiks-solver/2x2/statistics.html",
+		"/F/Dev/rubiks-solver/2x2/prognose.js",
+		"/F/Dev/rubiks-solver/2x2/progress-bar.js",
+		"/F/Dev/rubiks-solver/2x2/progress.sh",
+		"/F/Dev/xcom-simulations/node_modules/brorand/index.js",
+		"/F/Dev/xcom-simulations/bar-data.csv",
+		"/F/Dev/xcom-simulations/chartBravo.js",
+		"/F/Dev/hyper-param-evaluator/public/index.html",
+		"/F/Dev/hyper-param-evaluator/package.json",
+		"/C/Users/Erik/Downloads/data.json",
+		"/F/Dev/hyper-param-evaluator/src/data.js",
+		"/F/Dev/hyper-param-evaluator/src/data.json",
+		"/F/Dev/hyper-param-evaluator/src/App.css",
+		"/F/Dev/cube-or-not-cube/.gitignore",
+		"/F/Dev/cube-or-not-cube/example.html",
+		"/F/Dev/cube-or-not-cube/index.html",
+		"/F/Dev/cube-or-not-cube/main.js",
+		"/F/Dev/cube-or-not-cube/training-data/rename-files.js",
+		"/F/Dev/rubiks-gui/src/Buttons.js",
+		"/F/Dev/rubiks-gui/src/index.css",
+		"/F/Dev/rubiks-gui/public/index.html",
+		"/F/Dev/rubiks-gui/src/App.js",
+		"/F/Dev/rubiks-gui/src/star-names.json",
+		"/F/Dev/rubiks-gui/src/App.css",
+		"/F/Dev/rubiks-gui/src/Brain.js",
+		"/F/Dev/rubiks-gui/src/robot-names.json",
+		"/F/Dev/xor-brain/brain.js-master/brain.js-master/compare.js",
+		"/F/Dev/xor-brain/brain.js-master/brain.js-master/node-gpu.js",
+		"/F/Dev/xor-brain/brain.js-master/brain.js-master/browser-gpu.html",
+		"/F/Dev/rubiks-gui/src/XorGUI.js",
+		"/F/Dev/xor-brain/one-hot-test.js",
+		"/F/Dev/xor-brain/reproduce-bug.js",
+		"/F/Dev/xor-brain/compare.js",
+		"/F/Dev/rubiks-solver/2x2/data-collector.js",
+		"/F/Dev/rubiks-solver/2x2/statistics.js"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 39.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "hyper-pilot-tacu.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pack",
+				"package.json"
+			],
+			[
+				"trainer",
+				"2x2\\trainer.js"
+			],
+			[
+				"comm",
+				"2x2\\common.js"
+			],
+			[
+				"main",
+				"main.js"
+			],
+			[
+				"app.s",
+				"src\\App.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 296.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 1
+	}
+}
