@@ -1,4 +1,11 @@
 
+
+const GRAVITY = 0.0001, AIR_DENSITY_DRAG = 0.991
+
+let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, needRelease
+
+
+
 const controls = {
     p1: {
         up: false,
@@ -6,7 +13,8 @@ const controls = {
         left: false,
         right: false,
         shoot: false,
-        engine: false
+        engine: false,
+        flipped: false
     },
     p2: {
         up: false,
@@ -23,8 +31,6 @@ const config = {
     resolution: 1,
     sharedTicker: true,
 }
-
-let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2
 
 const app = new PIXI.Application(config)
 const renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight, config)
@@ -49,6 +55,18 @@ function startGame() {
     air_velocity = 0
     air_thickness = 0.01
 
+    needRelease = false
+
+    for (var i = 0; i < 100; i++) {
+        const star = new PIXI.Graphics()
+        star.game = { type: 'star' }
+        star.position.x = Math.floor(Math.random() * window.innerWidth)
+        star.position.y = Math.floor(Math.random() * window.innerHeight)
+        star.beginFill(0xcccccc)
+        star.drawRect(0, 0, 1, 1)
+        stage.addChild(star)
+    }
+
 	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
     p1Sprite.game = {
         type: 'p1',
@@ -66,20 +84,11 @@ function startGame() {
     engine.position.y = 0
     p1Sprite.addChild(engine)
 
-    for (var i = 0; i < 100; i++) {
-        const star = new PIXI.Graphics()
-        star.game = { type: 'star' }
-        star.position.x = Math.floor(Math.random() * window.innerWidth)
-        star.position.y = Math.floor(Math.random() * window.innerHeight)
-        star.beginFill(0xcccccc)
-        star.drawRect(0, 0, 1, 1)
-        stage.addChild(star)
-    }
-
     debug1 = new PIXI.Graphics()
     debug1.game = { type: 'debug1' }
     debug1.position.x = 0
     debug1.position.y = 0
+    debug1.visible = false
     debug1.beginFill(0xff0000)
     debug1.drawRect(0, 0, 10, 10)
     stage.addChild(debug1)
@@ -88,6 +97,7 @@ function startGame() {
     debug2.game = { type: 'debug2' }
     debug2.position.x = 0
     debug2.position.y = 0
+    debug2.visible = false
     debug2.beginFill(0x00ff00)
     debug2.drawRect(0, 0, 10, 10)
     stage.addChild(debug2)
@@ -137,16 +147,15 @@ function tickEntities(child) {
     switch (child.game && child.game.type) {
 
         case 'debug1':
+
             debug1.position.x = 300
-            debug1.position.y = 100 + p1gamepad.axes[3] * 10
+            debug1.position.y = 100 + p1gamepad.axes[3] * 100
             break;
 
         case 'debug2':
-            //const gp = p1gamepad.axes[3]
-            //const s = 1 / 1 - (Math.E ** gp / 50)
-            const exp = x => (2 ** x) * 10
+            
             debug2.position.x = 320
-            debug2.position.y = 100 + exp(p1gamepad.axes[3]) * 10
+            debug2.position.y = 100 + expo(p1gamepad.axes[3]) * 100
             break;
 
         case 'star':
@@ -159,22 +168,8 @@ function tickEntities(child) {
             break;
 
         case 'p1':
-            //const gp = p1gamepad.axes[3]
-            //const s = 1 / -1 + (Math.E ** input)
-
-            //console.log(p1gamepad.axes[3], sigmoid)
-
-            //p1Sprite.game.angle += s * 0.1
-            /*
-            if (controls.p1.left) {
-                p1Sprite.game.angle -= 0.06
-                
-            } else if (controls.p1.right) {
-                p1Sprite.game.angle += 0.02
-            }
-            */
-
             
+            p1Sprite.game.angle += expo(p1gamepad.axes[3]) / 15 * (p1Sprite.game.flipped ? -1 : 1)
             if (p1gamepad.buttons[5].pressed) {
                 engine.visible = true
                 p1Sprite.game.vx += Math.sin(p1Sprite.game.angle + (Math.PI*0.5)) * 0.01
@@ -182,30 +177,24 @@ function tickEntities(child) {
             } else {
                 engine.visible = false
             }
-            
 
-            //console.log(p1Sprite.game.angle)
-
-            //p1Sprite.game.angle = drag(angle)
-
-            /*if (controls.p1.up) {
-                p1Sprite.position.x += 1
+            if (p1gamepad.buttons[4].pressed && needRelease === false) {
+                p1Sprite.game.flipped = !p1Sprite.game.flipped
+                needRelease = true
+            } else if (!p1gamepad.buttons[4].pressed) {
+                needRelease = false
             }
-            if (controls.p1.down) {
-                p1Sprite.position.x -= 1
-            }*/
-
-            const d = drag(p1Sprite.game.angle) * air_thickness
             
-            p1Sprite.game.vx = Math.min(3, p1Sprite.game.vx - d)
-            p1Sprite.game.vy = Math.min(3, p1Sprite.game.vy)
+            const d = drag(p1Sprite.game.angle) * air_thickness * 0 // no drag here
+            
+            p1Sprite.game.vx = Math.min(3, p1Sprite.game.vx - d) * AIR_DENSITY_DRAG
+            p1Sprite.game.vy = (Math.min(3, p1Sprite.game.vy) * AIR_DENSITY_DRAG) + GRAVITY 
             p1Sprite.rotation = p1Sprite.game.angle
 
-            //p1Sprite.position.x += p1Sprite.game.vx 
+            p1Sprite.position.x += p1Sprite.game.vx 
             p1Sprite.position.y += p1Sprite.game.vy
 
-            //p1Sprite.position.x += p1gamepad.axes[0]
-            //p1Sprite.position.y += p1gamepad.axes[1]
+            p1Sprite.scale.y = p1Sprite.game.flipped ? -1 : 1
 
             return
             if (child.position.y > window.innerHeight) {
@@ -273,6 +262,17 @@ function getGamePadInput() {
             buttons: new Array(18).fill().map(() => ({ pressed: false }))
         }
     }
+}
+
+
+const expo = x => {
+    const f = 10
+    if (x < 0) {
+        return Math.abs(x ** f)
+    } else if (x > 0) {
+        return Math.abs(x ** f) * -1
+    }
+    return 0
 }
 
 
