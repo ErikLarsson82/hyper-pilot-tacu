@@ -1,8 +1,8 @@
 
 
-const GRAVITY = 0.0001, AIR_DENSITY_DRAG = 0.991
+const GRAVITY = 0.001, AIR_DENSITY_DRAG = 0.991
 
-let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, needRelease
+let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, aoa, needRelease
 
 
 
@@ -62,9 +62,20 @@ function startGame() {
         star.game = { type: 'star' }
         star.position.x = Math.floor(Math.random() * window.innerWidth)
         star.position.y = Math.floor(Math.random() * window.innerHeight)
-        star.beginFill(0xcccccc)
+        star.beginFill(0xccccdd)
         star.drawRect(0, 0, 1, 1)
         stage.addChild(star)
+    }
+
+    for (var i = 0; i < 20; i++) {
+        const cloud = new PIXI.Graphics()
+        cloud.game = { type: 'cloud' }
+        cloud.position.x = Math.floor(Math.random() * window.innerWidth)
+        cloud.position.y = Math.floor(Math.random() * window.innerHeight)
+        cloud.beginFill(0xcccccc)
+        cloud.drawRect(0, 0, 10, 10)
+        cloud.alpha = 0.1
+        stage.addChild(cloud)
     }
 
 	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
@@ -75,14 +86,23 @@ function startGame() {
         angle: 0
     }
     p1Sprite.anchor.set(0.5, 0.5)
-	p1Sprite.position.x = 50
-	p1Sprite.position.y = 50
+	p1Sprite.position.x = window.innerWidth / 2
+	p1Sprite.position.y = window.innerHeight / 2
 	stage.addChild(p1Sprite)
 
     engine = new PIXI.Sprite(PIXI.Texture.fromImage('engine.png'))
     engine.position.x = -15
     engine.position.y = 0
     p1Sprite.addChild(engine)
+
+    aoa = new PIXI.Graphics()
+    aoa.game = { type: 'aoa' }
+    aoa.position.x = 20
+    aoa.position.y = 20
+    aoa.visible = true
+    aoa.beginFill(0xff0000)
+    aoa.drawRect(0, 0, 2, 2)
+    p1Sprite.addChild(aoa)
 
     debug1 = new PIXI.Graphics()
     debug1.game = { type: 'debug1' }
@@ -159,12 +179,35 @@ function tickEntities(child) {
             break;
 
         case 'star':
-            if (air_thickness === 0) return
+            /*if (air_thickness === 0) return
 
             child.position.x -= air_velocity
             if (child.position.x < 0) {
                 child.position.x = window.innerWidth
+            }*/
+
+            child.position.x += p1Sprite.game.vx * -1
+            child.position.y += p1Sprite.game.vy * -1
+
+            {
+                const { x, y } = wrap(child.position)
+                child.position.x = x
+                child.position.y = y
             }
+
+            break;
+
+        case 'cloud':
+            
+            child.position.x += p1Sprite.game.vx * -20
+            child.position.y += p1Sprite.game.vy * -20
+
+            {
+                const { x, y } = wrap(child.position)
+                child.position.x = x
+                child.position.y = y
+            }
+
             break;
 
         case 'p1':
@@ -278,6 +321,24 @@ const expo = x => {
 
 function drag(angle) {
     return Math.abs(Math.sin(angle))
+}
+
+function wrap(pos) {
+    let { x, y } = pos
+    
+    if (x > window.innerWidth) {
+        x = 0
+    }
+    if (x < 0) {
+        x = window.innerWidth
+    }
+    if (y > window.innerHeight) {
+        y = 0
+    }
+    if (y < 0) {
+        y = window.innerHeight
+    }
+    return { x, y }
 }
 
 const isEnemy = ({prefixObject}) => prefixObject === 'enemy'
