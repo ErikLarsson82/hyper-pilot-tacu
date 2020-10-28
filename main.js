@@ -2,7 +2,7 @@
 
 const GRAVITY = 0.00001, AIR_DENSITY_DRAG = 1 //0.991
 
-let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, aoa, aoa2, aoa3, aoa4, needRelease
+let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, aoa, aoa2, aoa3, aoa4, needRelease, needRelease2, planeTexture, droneTexture
 
 
 
@@ -57,6 +57,10 @@ function startGame() {
     air_thickness = 0.01
 
     needRelease = false
+    needRelease2 = false
+
+    droneTexture = PIXI.Texture.fromImage('player-drone.png')
+    planeTexture = PIXI.Texture.fromImage('player-1.png')
 
     for (var i = 0; i < 100; i++) {
         const star = new PIXI.Graphics()
@@ -80,12 +84,13 @@ function startGame() {
     }
 
     {
-    	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
+    	p1Sprite = new PIXI.Sprite(planeTexture)
         p1Sprite.game = {
             type: 'p1',
             vx: 0,
             vy: 0,
-            angle: 0
+            angle: 0,
+            mode: 'plane'
         }
         p1Sprite.anchor.set(0.5, 0.5)
     	p1Sprite.position.x = window.innerWidth / 2
@@ -266,7 +271,14 @@ function tickEntities(child) {
             aoa4.position.y = p1Sprite.position.y + p1Sprite.game.vy * -100
             break;
         case 'p1':
-            
+            if (p1gamepad.buttons[0].pressed && needRelease2 === false) {
+                p1Sprite.game.mode = p1Sprite.game.mode === 'plane' ? 'drone' : 'plane'
+                p1Sprite.texture = p1Sprite.game.mode === 'plane' ? planeTexture : droneTexture
+                needRelease2 = true
+            } else if (!p1gamepad.buttons[0].pressed) {
+                needRelease2 = false
+            }
+
             p1Sprite.game.angle += expo(p1gamepad.axes[3]) / 15 * (p1Sprite.game.flipped ? -1 : 1)
             if (p1gamepad.buttons[5].pressed) {
                 engine.visible = true
