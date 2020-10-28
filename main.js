@@ -1,8 +1,8 @@
 
 
-const GRAVITY = 0.001, AIR_DENSITY_DRAG = 0.991
+const GRAVITY = 0.00001, AIR_DENSITY_DRAG = 1 //0.991
 
-let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, aoa, needRelease
+let air_velocity, air_thickness, p1gamepad, p1Sprite, engine, debug1, debug2, aoa, aoa2, aoa3, aoa4, needRelease
 
 
 
@@ -97,12 +97,39 @@ function startGame() {
 
     aoa = new PIXI.Graphics()
     aoa.game = { type: 'aoa' }
-    aoa.position.x = 20
-    aoa.position.y = 20
+    aoa.position.x = 0
+    aoa.position.y = 0
     aoa.visible = true
     aoa.beginFill(0xff0000)
     aoa.drawRect(0, 0, 2, 2)
-    p1Sprite.addChild(aoa)
+    stage.addChild(aoa)
+
+    aoa2 = new PIXI.Graphics()
+    aoa2.game = { type: 'aoa2' }
+    aoa2.position.x = 0
+    aoa2.position.y = 0
+    aoa2.visible = true
+    aoa2.beginFill(0x00ff00)
+    aoa2.drawRect(0, 0, 2, 2)
+    stage.addChild(aoa2)
+
+    aoa3 = new PIXI.Graphics()
+    aoa3.game = { type: 'aoa3' }
+    aoa3.position.x = 0
+    aoa3.position.y = 0
+    aoa3.visible = true
+    aoa3.beginFill(0xff00ff)
+    aoa3.drawRect(0, 0, 2, 2)
+    stage.addChild(aoa3)
+
+    aoa4 = new PIXI.Graphics()
+    aoa4.game = { type: 'aoa4' }
+    aoa4.position.x = 0
+    aoa4.position.y = 0
+    aoa4.visible = true
+    aoa4.beginFill(0x00ffff)
+    aoa4.drawRect(0, 0, 2, 2)
+    stage.addChild(aoa4)
 
     debug1 = new PIXI.Graphics()
     debug1.game = { type: 'debug1' }
@@ -210,6 +237,28 @@ function tickEntities(child) {
 
             break;
 
+        case 'aoa':
+            aoa.position.x = p1Sprite.position.x + p1Sprite.game.vx * 50
+            aoa.position.y = p1Sprite.position.y + p1Sprite.game.vy * 50
+
+            break;
+        case 'aoa2':
+            aoa2.position.x = p1Sprite.position.x + Math.cos(p1Sprite.game.angle) * 50
+            aoa2.position.y = p1Sprite.position.y + Math.sin(p1Sprite.game.angle) * 50
+
+            break;
+        case 'aoa3':
+            //const angleOfAttack = (Math.atan2(p1Sprite.game.vy, p1Sprite.game.vx ) - p1Sprite.game.angle + (Math.PI/2)) % (Math.PI*2)
+
+            //const mahManPythageraous = Math.sqrt(p1Sprite.game.vx**2 + p1Sprite.game.vy**2)
+            aoa3.position.x = p1Sprite.position.x + angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) * 0.5
+            aoa3.position.y = p1Sprite.position.y
+            //aoa3.position.y = p1Sprite.position.y + Math.sin(angleOfAttack) * 100 * mahManPythageraous
+            break;
+        case 'aoa4':
+            aoa4.position.x = p1Sprite.position.x + p1Sprite.game.vx * -100
+            aoa4.position.y = p1Sprite.position.y + p1Sprite.game.vy * -100
+            break;
         case 'p1':
             
             p1Sprite.game.angle += expo(p1gamepad.axes[3]) / 15 * (p1Sprite.game.flipped ? -1 : 1)
@@ -230,13 +279,20 @@ function tickEntities(child) {
             
             const d = drag(p1Sprite.game.angle) * air_thickness * 0 // no drag here
             
-            p1Sprite.game.vx = Math.min(3, p1Sprite.game.vx - d) * AIR_DENSITY_DRAG
-            p1Sprite.game.vy = (Math.min(3, p1Sprite.game.vy) * AIR_DENSITY_DRAG) + GRAVITY 
+            const multiplier = 1 - (angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) / 180) / 10
+
+            console.log(multiplier)
+
+            p1Sprite.game.vx = p1Sprite.game.vx * multiplier
+            p1Sprite.game.vy = (p1Sprite.game.vy + GRAVITY) * multiplier
             p1Sprite.rotation = p1Sprite.game.angle
 
-            p1Sprite.position.x += p1Sprite.game.vx 
+            p1Sprite.position.x += p1Sprite.game.vx
             p1Sprite.position.y += p1Sprite.game.vy
 
+            p1Sprite.position.x = wrap(p1Sprite.position).x
+            p1Sprite.position.y = wrap(p1Sprite.position).y
+            
             p1Sprite.scale.y = p1Sprite.game.flipped ? -1 : 1
 
             return
@@ -340,6 +396,30 @@ function wrap(pos) {
     }
     return { x, y }
 }
+
+function angleOfAttack(vy, vx, angle) {
+    const alphaRadians = Math.atan2(vy, vx)
+    const betaRadians = (angle * 2) - (Math.PI/2)
+    const alphaDegrees = radianToDegrees(alphaRadians)
+    const betaDegrees = radianToDegrees(betaRadians)
+
+    const phi = Math.abs(betaDegrees - alphaDegrees) % 360
+    const distance = phi > 180 ? 360 - phi : phi;
+    return distance
+}
+
+function radianToDegrees(rad) {
+    return rad * 180 / Math.PI
+}
+
+
+//console.log(angleOfAttack(0.02, 0, -3.14).toFixed(1))
+//console.log(angleOfAttack(0.02, 0, -1.5).toFixed(1))
+//console.log(angleOfAttack(0.02, 0, 0).toFixed(1))// === '1.6') // startpos - pekar höger och faller
+//console.log(angleOfAttack(0.02, 0, 1.5).toFixed(1))// === '0.1') // faller och pekar rakt ner
+//console.log(angleOfAttack(0.02, 0, 3.14).toFixed(1))// === '-1.6') // faller och pekar rakt till vänster (uppochner)
+//console.log(angleOfAttack(0.02, 0, 4.7).toFixed(1))// === '0.1') // faller och pekar rakt upp (baklänges)
+//console.log(angleOfAttack(0.02, 0, 6.23).toFixed(1))// === '1.6') // faller och pekar rakt till höger (nästan 360)
 
 const isEnemy = ({prefixObject}) => prefixObject === 'enemy'
 const isMine = ({prefixObject}) => prefixObject === 'mine'
