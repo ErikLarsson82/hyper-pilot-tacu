@@ -118,8 +118,8 @@ function startGame() {
     aoa3.position.x = 0
     aoa3.position.y = 0
     aoa3.visible = true
-    aoa3.beginFill(0xff00ff)
-    aoa3.drawRect(0, 0, 2, 2)
+    aoa3.beginFill(0x0000ff)
+    aoa3.drawRect(-4, -4, 8, 8)
     stage.addChild(aoa3)
 
     aoa4 = new PIXI.Graphics()
@@ -226,7 +226,7 @@ function tickEntities(child) {
 
         case 'cloud':
             
-            child.position.x += p1Sprite.game.vx * -20
+            child.position.x += p1Sprite.game.vx * -20 //(dragVector({ x: p1Sprite.game.vx, y: p1Sprite.game.vy }, p1Sprite.game.angle) * 0.1) * -20
             child.position.y += p1Sprite.game.vy * -20
 
             {
@@ -251,8 +251,11 @@ function tickEntities(child) {
             //const angleOfAttack = (Math.atan2(p1Sprite.game.vy, p1Sprite.game.vx ) - p1Sprite.game.angle + (Math.PI/2)) % (Math.PI*2)
 
             //const mahManPythageraous = Math.sqrt(p1Sprite.game.vx**2 + p1Sprite.game.vy**2)
-            aoa3.position.x = p1Sprite.position.x + angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) * 0.5
-            aoa3.position.y = p1Sprite.position.y
+            {
+                const { x, y } = dragVector({ x: p1Sprite.game.vx, y: p1Sprite.game.vy }, p1Sprite.game.angle)
+                aoa3.position.x = p1Sprite.position.x + x // + angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) * 0.5
+                aoa3.position.y = p1Sprite.position.y + y
+            }
             //aoa3.position.y = p1Sprite.position.y + Math.sin(angleOfAttack) * 100 * mahManPythageraous
             break;
         case 'aoa4':
@@ -279,11 +282,13 @@ function tickEntities(child) {
             
             const d = drag(p1Sprite.game.angle) * air_thickness * 0 // no drag here
             
-            const multiplier = 1 - (angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) / 180) / 10
+            //const multiplier = 1 - (angleOfAttack(p1Sprite.game.vy, p1Sprite.game.vx, p1Sprite.game.angle) / 180) / 10
 
-            console.log(multiplier)
+            //console.log(multiplier)
 
-            p1Sprite.game.vx = p1Sprite.game.vx * multiplier
+            const multiplier = 1
+
+            p1Sprite.game.vx = p1Sprite.game.vx + (dragVector({ x: p1Sprite.game.vx, y: p1Sprite.game.vy }, p1Sprite.game.angle).x * -0.001)
             p1Sprite.game.vy = (p1Sprite.game.vy + GRAVITY) * multiplier
             p1Sprite.rotation = p1Sprite.game.angle
 
@@ -354,7 +359,6 @@ function getGamePadInput() {
 
     if (gamepads['0']) {
         p1gamepad = gamepads['0']
-        //console.log(gamepads['0'].axes)
     } else {
         p1gamepad = {
             axes: [0,0,0,0],
@@ -374,7 +378,7 @@ const expo = x => {
     return 0
 }
 
-
+// Old version where i attempted drag
 function drag(angle) {
     return Math.abs(Math.sin(angle))
 }
@@ -397,7 +401,12 @@ function wrap(pos) {
     return { x, y }
 }
 
-function angleOfAttack(vy, vx, angle) {
+/*
+Old function where i tried to just calculate the intensity of the angle of attack
+This turned out to be pretty difficult so it might be better to shoot for the holy grail right away
+*/
+
+function old_angleOfAttack(vy, vx, angle) {
     const alphaRadians = Math.atan2(vy, vx)
     const betaRadians = (angle * 2) - (Math.PI/2)
     const alphaDegrees = radianToDegrees(alphaRadians)
@@ -408,11 +417,6 @@ function angleOfAttack(vy, vx, angle) {
     return distance
 }
 
-function radianToDegrees(rad) {
-    return rad * 180 / Math.PI
-}
-
-
 //console.log(angleOfAttack(0.02, 0, -3.14).toFixed(1))
 //console.log(angleOfAttack(0.02, 0, -1.5).toFixed(1))
 //console.log(angleOfAttack(0.02, 0, 0).toFixed(1))// === '1.6') // startpos - pekar höger och faller
@@ -420,6 +424,27 @@ function radianToDegrees(rad) {
 //console.log(angleOfAttack(0.02, 0, 3.14).toFixed(1))// === '-1.6') // faller och pekar rakt till vänster (uppochner)
 //console.log(angleOfAttack(0.02, 0, 4.7).toFixed(1))// === '0.1') // faller och pekar rakt upp (baklänges)
 //console.log(angleOfAttack(0.02, 0, 6.23).toFixed(1))// === '1.6') // faller och pekar rakt till höger (nästan 360)
+
+
+function dragVector({x, y}, angle) {
+    const a = angle % Math.PI
+
+    if (y > 0 && a > 0 && a < 1.2) {
+        return { x: -50, y: 0 }
+    }
+    if (y > 0 && a > 1.8 && a < 3.14) {
+        return { x: 50, y: 0 }
+    }
+    return { x: 0, y: 0 }
+}
+
+console.log(dragVector({x: 0, y: 2}, 0.01)) // x 90 y 0
+console.log(dragVector({x: 0, y: 2}, 90)) // x 0 y -90
+
+function radianToDegrees(rad) {
+    return rad * 180 / Math.PI
+}
+
 
 const isEnemy = ({prefixObject}) => prefixObject === 'enemy'
 const isMine = ({prefixObject}) => prefixObject === 'mine'
@@ -440,16 +465,18 @@ function keyboardKeyDown(e) {
         controls.p1.left = true
     }
     if (e.keyCode === 87) {
-        controls.p1.up = true
+        p1gamepad.axes[3] = 1
     }
     if (e.keyCode === 83) {
-        controls.p1.down = true
+        p1gamepad.axes[3] = -1
     }
     if (e.keyCode === 32) {
         controls.p1.shoot = true
     }
     if (e.keyCode === 13) { //enter
-        controls.p1.engine = true
+        console.log('angle', p1Sprite.game.angle)
+        console.log('vector', p1Sprite.game.vx, p1Sprite.game.vy)
+        console.log('drag', dragVector({ x: p1Sprite.game.vx, y: p1Sprite.game.vy }, p1Sprite.game.angle))
     }
 
     if (e.keyCode === 39) {
@@ -481,7 +508,8 @@ function keyboardKeyUp(e) {
         controls.p1.left = false
     }
     if (e.keyCode === 87) {
-        controls.p1.up = false
+        //controls.p1.up = false
+
     }
     if (e.keyCode === 83) {
         controls.p1.down = false
