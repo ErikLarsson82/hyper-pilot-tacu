@@ -44,6 +44,7 @@ renderer.view.style.imageRendering = 'pixelated'
 renderer.backgroundColor = 0x181425
 
 PIXI.loader.add('player-1.png')
+PIXI.loader.add('player-drone.png')
 PIXI.loader.add('engine.png')
 PIXI.loader.load(startGame)
 
@@ -78,22 +79,24 @@ function startGame() {
         stage.addChild(cloud)
     }
 
-	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
-    p1Sprite.game = {
-        type: 'p1',
-        vx: 0,
-        vy: 0,
-        angle: 0
-    }
-    p1Sprite.anchor.set(0.5, 0.5)
-	p1Sprite.position.x = window.innerWidth / 2
-	p1Sprite.position.y = window.innerHeight / 2
-	stage.addChild(p1Sprite)
+    {
+    	p1Sprite = new PIXI.Sprite(PIXI.Texture.fromImage('player-1.png'))
+        p1Sprite.game = {
+            type: 'p1',
+            vx: 0,
+            vy: 0,
+            angle: 0
+        }
+        p1Sprite.anchor.set(0.5, 0.5)
+    	p1Sprite.position.x = window.innerWidth / 2
+    	p1Sprite.position.y = window.innerHeight / 2
+    	stage.addChild(p1Sprite)
 
-    engine = new PIXI.Sprite(PIXI.Texture.fromImage('engine.png'))
-    engine.position.x = -15
-    engine.position.y = 0
-    p1Sprite.addChild(engine)
+        engine = new PIXI.Sprite(PIXI.Texture.fromImage('engine.png'))
+        engine.position.x = -15
+        engine.position.y = 0
+        p1Sprite.addChild(engine)
+    }
 
     aoa = new PIXI.Graphics()
     aoa.game = { type: 'aoa' }
