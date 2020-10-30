@@ -1,5 +1,4 @@
 
-
 const GRAVITY = 0.00001, AIR_DENSITY_DRAG = 1 //0.991
 
 let air_velocity, air_thickness, p1gamepad, debug1, debug2, needRelease, needRelease2, planeTexture, droneTexture
@@ -61,6 +60,15 @@ function startGame() {
 
     droneTexture = PIXI.Texture.fromImage('player-drone.png')
     planeTexture = PIXI.Texture.fromImage('player-1.png')
+
+    const space = new PIXI.Graphics()
+    space.game = { type: 'space' }
+    space.position.x = 0
+    space.position.y = 0
+    space.visible = true
+    space.beginFill(0x000000)
+    space.drawRect(0, 0, window.innerWidth, 100)
+    stage.addChild(space)
 
     for (var i = 0; i < 100; i++) {
         const star = new PIXI.Graphics()
@@ -266,92 +274,103 @@ function tickEntities(child) {
                 aoa3.position.y = player.position.y + y
             }
             //aoa3.position.y = player.position.y + Math.sin(angleOfAttack) * 100 * mahManPythageraous
-            break;
+        break
         case 'aoa4':
-            {
-                const player = stage.children.find(isPlayer)
-                if (!player) return
-                const aoa4 = child   
-                aoa4.position.x = player.position.x + player.game.vx * -100
-                aoa4.position.y = player.position.y + player.game.vy * -100
-            }
-            break;
+        {
+            const player = stage.children.find(isPlayer)
+            if (!player) return
+            const aoa4 = child   
+            aoa4.position.x = player.position.x + player.game.vx * -100
+            aoa4.position.y = player.position.y + player.game.vy * -100
+        }
+        break
         case 'plane':
-            {
-                const p = child
-                const g = p.game
-                const engine = child.children.find(isEngine)
+        {
+            const p = child
+            const g = p.game
+            const engine = child.children.find(isEngine)
 
-                if (p1gamepad.buttons[0].pressed && needRelease2 === false) {
-                    g.mode = g.mode === 'plane' ? 'drone' : 'plane'
-                    p.texture = g.mode === 'plane' ? planeTexture : droneTexture
-                    needRelease2 = true
-                } else if (!p1gamepad.buttons[0].pressed) {
-                    needRelease2 = false
-                }
-
-                g.angle += expo(p1gamepad.axes[3]) / 15 * (g.flipped ? -1 : 1)
-                if (p1gamepad.buttons[5].pressed) {
-                    engine.visible = true
-                    g.vx += Math.sin(g.angle + (Math.PI*0.5)) * 0.01
-                    g.vy += Math.cos(g.angle + (Math.PI*-0.5)) * 0.01
-                } else {
-                    engine.visible = false
-                }
-
-                if (p1gamepad.buttons[4].pressed && needRelease === false) {
-                    g.flipped = !g.flipped
-                    needRelease = true
-                } else if (!p1gamepad.buttons[4].pressed) {
-                    needRelease = false
-                }
-                
-                const d = drag(g.angle) * air_thickness * 0 // no drag here
-                
-                //const multiplier = 1 - (angleOfAttack(g.vy, g.vx, g.angle) / 180) / 10
-
-                //console.log(multiplier)
-
-                const multiplier = 1
-
-                g.vx = g.vx + (dragVector({ x: g.vx, y: g.vy }, g.angle).x * -0.001)
-                g.vy = (g.vy + GRAVITY) * multiplier
-                p.rotation = g.angle
-
-                p.position.x += g.vx
-                p.position.y += g.vy
-
-                p.position.x = wrap(p.position).x
-                p.position.y = wrap(p.position).y
-                
-                p.scale.y = g.flipped ? -1 : 1
+            if (p1gamepad.buttons[0].pressed && needRelease2 === false) {
+                g.mode = g.mode === 'plane' ? 'drone' : 'plane'
+                p.texture = g.mode === 'plane' ? planeTexture : droneTexture
+                needRelease2 = true
+            } else if (!p1gamepad.buttons[0].pressed) {
+                needRelease2 = false
             }
 
-            break
-            case 'drone':
-                {
-                    const sprite = child
-                    const game = sprite.game
-                    const airflow = child.children.find(isAirflow)
-                    
-                    game.angle += expo(p1gamepad.axes[3]) / 15 * (game.flipped ? -1 : 1)
+            g.angle += expo(p1gamepad.axes[3]) / 15 * (g.flipped ? -1 : 1)
+            if (p1gamepad.buttons[5].pressed) {
+                engine.visible = true
+                g.vx += Math.sin(g.angle + (Math.PI*0.5)) * 0.01
+                g.vy += Math.cos(g.angle + (Math.PI*-0.5)) * 0.01
+            } else {
+                engine.visible = false
+            }
 
-                    if (p1gamepad.buttons[5].pressed) {
-                        airflow.visible = true
-                        game.vx += Math.sin(game.angle + (Math.PI*2)) * 0.0001
-                        game.vy += Math.cos(game.angle + (Math.PI)) * 0.0001
-                    } else {
-                        airflow.visible = false
-                    }
+            if (p1gamepad.buttons[4].pressed && needRelease === false) {
+                g.flipped = !g.flipped
+                needRelease = true
+            } else if (!p1gamepad.buttons[4].pressed) {
+                needRelease = false
+            }
+            
+            const d = drag(g.angle) * air_thickness * 0 // no drag here
+            
+            //const multiplier = 1 - (angleOfAttack(g.vy, g.vx, g.angle) / 180) / 10
 
-                    game.vx += 0
-                    game.vy += GRAVITY
+            //console.log(multiplier)
 
-                    sprite.position.x += game.vx
-                    sprite.position.y += game.vy
-                    sprite.rotation = game.angle
-                }
-                break;
+            const multiplier = 1
+
+            g.vx = g.vx + (dragVector({ x: g.vx, y: g.vy }, g.angle).x * -0.001)
+            g.vy = (g.vy + GRAVITY) * multiplier
+            p.rotation = g.angle
+
+            p.position.x += g.vx
+            p.position.y += g.vy
+
+            p.position.x = wrap(p.position).x
+            p.position.y = wrap(p.position).y
+            
+            p.scale.y = g.flipped ? -1 : 1
+        }
+        break
+
+        case 'drone':
+        {
+            const sprite = child
+            const game = sprite.game
+            const airflow = child.children.find(isAirflow)
+            
+            game.angle += expo(p1gamepad.axes[3]) / 15 * (game.flipped ? -1 : 1)
+
+            if (p1gamepad.buttons[5].pressed) {
+                airflow.visible = true
+                game.vx += Math.sin(game.angle + (Math.PI*2)) * 0.01 //0.0001
+                game.vy += Math.cos(game.angle + (Math.PI)) * 0.01 //0.0001
+            } else {
+                airflow.visible = false
+            }
+
+            game.vx += 0
+            game.vy += GRAVITY
+
+            sprite.position.x += game.vx
+            sprite.position.y += game.vy
+            sprite.rotation = game.angle
+        }
+        break
+
+        case 'space':
+        {
+            const player = stage.children.find(isPlayer)
+            if (!player) return
+
+            const sprite = child
+            sprite.y = 0
+            sprite.height = Math.max(0, Math.min(window.innerHeight, (player.position.y * -20) + 2500))
+        }
+        break
     }
 }
 
@@ -385,7 +404,7 @@ function spawnDrone() {
     }
     droneSprite.anchor.set(0.5, 0.5)
     droneSprite.position.x = window.innerWidth / 2
-    droneSprite.position.y = window.innerHeight / 2
+    droneSprite.position.y = 0 //window.innerHeight / 2
     stage.addChild(droneSprite)
 
     const airflow = new PIXI.Sprite(PIXI.Texture.fromImage('airflow.png'))
