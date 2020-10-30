@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"ch",
+				"children"
+			],
+			[
+				"al",
+				"alphaDegrees"
+			],
+			[
+				"ang",
+				"angleOfAttack"
+			],
+			[
+				"in",
+				"innerWidth"
+			],
+			[
+				"game",
+				"gamepads"
+			],
+			[
 				"coll",
 				"collidee"
 			],
@@ -211,6 +231,25 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "main.js",
+			"settings":
+			{
+				"buffer_size": 17215,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "octo-spec.txt",
+			"settings":
+			{
+				"buffer_size": 655,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "RougeLike ShootemUP Random banor 1 player"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -324,7 +363,7 @@
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -338,6 +377,28 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"engine",
+			"p.game",
+			"p1Sprite",
+			"planeSprite",
+			"p1Sprite",
+			"1)",
+			" ===",
+			"aoa3",
+			"aoa2",
+			"aoa",
+			"debug1",
+			"star",
+			"axes[3]",
+			"axes",
+			"axis",
+			"10",
+			"star",
+			"keyboardKeyUp",
+			"p1Sprite",
+			"touchF",
+			"RENDER_SIZE",
+			"REN"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -355,8 +416,68 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17215,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3454,
+								3454
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2085.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "octo-spec.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 655,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								655,
+								655
+							]
+						],
+						"settings":
+						{
+							"auto_name": "RougeLike ShootemUP Random banor 1 player",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -456,7 +577,7 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 296.0,
 	"status_bar_visible": true,
 	"template_settings":

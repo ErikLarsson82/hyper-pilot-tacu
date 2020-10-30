@@ -87,7 +87,7 @@ function startGame() {
     aoa.game = { type: 'aoa' }
     aoa.position.x = 0
     aoa.position.y = 0
-    aoa.visible = true
+    aoa.visible = false
     aoa.beginFill(0xff0000)
     aoa.drawRect(0, 0, 2, 2)
     stage.addChild(aoa)
@@ -96,7 +96,7 @@ function startGame() {
     aoa2.game = { type: 'aoa2' }
     aoa2.position.x = 0
     aoa2.position.y = 0
-    aoa2.visible = true
+    aoa2.visible = false
     aoa2.beginFill(0x00ff00)
     aoa2.drawRect(0, 0, 2, 2)
     stage.addChild(aoa2)
@@ -105,7 +105,7 @@ function startGame() {
     aoa3.game = { type: 'aoa3' }
     aoa3.position.x = 0
     aoa3.position.y = 0
-    aoa3.visible = true
+    aoa3.visible = false
     aoa3.beginFill(0x0000ff)
     aoa3.drawRect(-4, -4, 8, 8)
     stage.addChild(aoa3)
@@ -114,7 +114,7 @@ function startGame() {
     aoa4.game = { type: 'aoa4' }
     aoa4.position.x = 0
     aoa4.position.y = 0
-    aoa4.visible = true
+    aoa4.visible = false
     aoa4.beginFill(0x00ffff)
     aoa4.drawRect(0, 0, 2, 2)
     stage.addChild(aoa4)
@@ -137,6 +137,8 @@ function startGame() {
     debug2.drawRect(0, 0, 10, 10)
     stage.addChild(debug2)
 
+
+    spawnDrone()
 
     animationLoop()
 }
@@ -176,6 +178,7 @@ const isCollision = (sprite1, sprite2) => {
     const collisionDistance = (sprite1.width + sprite2.width) / 2
     return distance < collisionDistance
 }
+
 
 function tickEntities(child) {
 
@@ -322,57 +325,33 @@ function tickEntities(child) {
                 p.position.y = wrap(p.position).y
                 
                 p.scale.y = g.flipped ? -1 : 1
-
-                return
-                if (child.position.y > window.innerHeight) {
-                    /*child.position.y = 230
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0*/
-                    child.position.y = 70
-                    child.position.x = 70
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0
-                }
-
-                if (child.position.y < 0) {
-                    /*child.position.y = 30
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0
-                    */
-                    child.position.y = 70
-                    child.position.x = 70
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0
-                }
-
-                if (child.position.x > window.innerWidth) {
-                    /*child.position.x = 240
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.angle = 0*/
-                    child.position.y = 70
-                    child.position.x = 70
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0
-                }
-
-
-                if (child.position.x < 0) {
-                    /*child.position.x = 15
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.angle = 0*/
-                    child.position.y = 70
-                    child.position.x = 70
-                    p1Sprite.game.vx = 0
-                    p1Sprite.game.vy = 0
-                    p1Sprite.game.angle = 0
-                }
             }
 
             break
+            case 'drone':
+                {
+                    const sprite = child
+                    const game = sprite.game
+                    const airflow = child.children.find(isAirflow)
+                    
+                    game.angle += expo(p1gamepad.axes[3]) / 15 * (game.flipped ? -1 : 1)
 
+                    if (p1gamepad.buttons[5].pressed) {
+                        airflow.visible = true
+                        game.vx += Math.sin(game.angle + (Math.PI*2)) * 0.0001
+                        game.vy += Math.cos(game.angle + (Math.PI)) * 0.0001
+                    } else {
+                        airflow.visible = false
+                    }
+
+                    game.vx += 0
+                    game.vy += GRAVITY
+
+                    sprite.position.x += game.vx
+                    sprite.position.y += game.vy
+                    sprite.rotation = game.angle
+                }
+                break;
     }
 }
 
@@ -408,6 +387,12 @@ function spawnDrone() {
     droneSprite.position.x = window.innerWidth / 2
     droneSprite.position.y = window.innerHeight / 2
     stage.addChild(droneSprite)
+
+    const airflow = new PIXI.Sprite(PIXI.Texture.fromImage('airflow.png'))
+    airflow.game = { type: 'airflow' }
+    airflow.position.x = -5
+    airflow.position.y = 2
+    droneSprite.addChild(airflow)
 }
 
 function killPlayer() {
@@ -513,6 +498,7 @@ function radianToDegrees(rad) {
 
 const isPlayer = ({game}) => game && game.type === 'plane' || game.type === 'drone'
 const isEngine = ({game}) => game && game.type === 'engine'
+const isAirflow = ({game}) => game && game.type === 'airflow'
 
 function keyboardKeyDown(e) {
     
